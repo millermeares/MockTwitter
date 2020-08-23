@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\mock-twitter",
+    "\\mock-twitter\\src",
+    "\\mock-twitter\\src\\assets",
+    "\\mock-twitter\\src\\components",
+    "\\mock-twitter\\src\\router",
+    "\\mock-twitter\\src\\views"
+  ],
+  "SelectedNode": "\\mock-twitter\\src\\views\\CreateAccount.vue",
+  "PreviewInSolutionExplorer": false
+}
