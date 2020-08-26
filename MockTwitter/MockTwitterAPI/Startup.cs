@@ -35,7 +35,7 @@ namespace MockTwitterAPI
                 });
             });
             services.AddDbContext<TwitterContext>(opt =>
-            opt.UseInMemoryDatabase("MockTwitter"));
+            opt.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
         }
 

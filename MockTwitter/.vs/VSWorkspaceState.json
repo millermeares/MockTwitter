@@ -11,6 +11,6 @@
     "\\MockTwitterFrontEnd\\mock-twitter\\src",
     "\\MockTwitterFrontEnd\\mock-twitter\\src\\views"
   ],
-  "SelectedNode": "\\MockTwitterAPI\\Controllers\\TweetsController.cs",
+  "SelectedNode": "\\MockTwitterAPI\\Models\\Tweet.cs",
   "PreviewInSolutionExplorer": false
 }

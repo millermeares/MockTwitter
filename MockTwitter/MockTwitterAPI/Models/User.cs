@@ -14,7 +14,7 @@ namespace MockTwitterAPI.Models
         [Required]
         public string Username { get; set; }
         [Required]
-        public string Password {get; set;}
+        public string Password_hash {get; set;}
         public byte[] Salt { get; set; }
         public DateTime Created_at { get; set; }
     }

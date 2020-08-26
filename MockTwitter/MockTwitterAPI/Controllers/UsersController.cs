@@ -94,7 +94,7 @@ namespace MockTwitterAPI.Controllers
         public async Task<ActionResult<User>> LoginUser(User user)
         {
             _logger.LogInformation("Reached Login Point");
-            var pw = user.Password;
+            var pw = user.Password_hash;
             if(!UsernameExists(user.Username)) {
                 return StatusCode(303);
             }
@@ -107,7 +107,7 @@ namespace MockTwitterAPI.Controllers
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
 
-            if(hashed != logging_in_user.Password)
+            if(hashed != logging_in_user.Password_hash)
             {
                 return Unauthorized();
             }
@@ -127,7 +127,7 @@ namespace MockTwitterAPI.Controllers
                 return StatusCode(303);
             }
 
-            var pw = user.Password;
+            var pw = user.Password_hash;
             // generate a 128-bit salt using a secure PRNG
             byte[] salt = new byte[128 / 8];
             using (var rng = RandomNumberGenerator.Create())
@@ -143,7 +143,7 @@ namespace MockTwitterAPI.Controllers
                 prf: KeyDerivationPrf.HMACSHA1,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
-            user.Password = hashed;
+            user.Password_hash = hashed;
 
             user.Created_at = DateTime.Now;
 
