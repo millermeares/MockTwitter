@@ -91,10 +91,10 @@ namespace MockTwitterAPI.Controllers
         }
 
         [HttpPost("login/")]
-        public async Task<ActionResult<User>> LoginUser(User user)
+        public async Task<ActionResult<SecureToken>> LoginUser(User user)
         {
             _logger.LogInformation("Reached Login Point");
-            var pw = user.Password_hash;
+            var pw = user.PasswordHash;
             if(!UsernameExists(user.Username)) {
                 return StatusCode(303);
             }
@@ -107,27 +107,66 @@ namespace MockTwitterAPI.Controllers
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
 
-            if(hashed != logging_in_user.Password_hash)
+            if(hashed != logging_in_user.PasswordHash)
             {
                 return Unauthorized();
             }
-            return logging_in_user;
+            // need to create a new id token and put it in the DB. Then return it.
+            SecureToken token_new = new SecureToken(logging_in_user.Id);
+            try
+            {
+                logging_in_user.LastAuthed = token_new.LastAuthed;
+                logging_in_user.IdToken = token_new.IdToken;
+                logging_in_user.TokenExpiresIn = token_new.ExpiresIn;
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Could not update user when logging in");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return CreatedAtAction("GetUser", "Users", new { id = logging_in_user.Id }, token_new);
+        }
+        [HttpPost("autologin/")]
+        public async Task<ActionResult<SecureToken>> AutoLoginUser(SecureToken storedToken)
+        {
+            var token = await _context.Users.FindAsync(storedToken.UserId);
+            if(token == null)
+            {
+                return BadRequest();
+            }
+            // incorrect GUID.
+            if (token.IdToken != storedToken.IdToken)
+            {
+                return Unauthorized();
+            }
+            TimeSpan exp = new TimeSpan(0, token.TokenExpiresIn, 0);
+            // expired.
+            if(token.CreatedAt.Add(exp) < DateTime.Now)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
         }
 
         // POST: api/Users
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        [HttpPost("createaccount/")]
+        public async Task<ActionResult<SecureToken>> PostUser(User user)
         {
             _logger.LogInformation("Reached Post User");
-            // prevents duplicate user.
+            if(user.Username.Length > 50)
+            {
+                return BadRequest();
+            }
+            // prevents duplicate usernames.
             if(UsernameExists(user.Username))
             {
                 return StatusCode(303);
             }
-
-            var pw = user.Password_hash;
+            var pw = user.PasswordHash;
             // generate a 128-bit salt using a secure PRNG
             byte[] salt = new byte[128 / 8];
             using (var rng = RandomNumberGenerator.Create())
@@ -143,14 +182,26 @@ namespace MockTwitterAPI.Controllers
                 prf: KeyDerivationPrf.HMACSHA1,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
-            user.Password_hash = hashed;
+            user.PasswordHash = hashed;
 
-            user.Created_at = DateTime.Now;
+            user.CreatedAt = DateTime.Now;
+            SecureToken token = new SecureToken(user.Id);
+            user.IdToken = token.IdToken;
+            user.TokenExpiresIn = token.ExpiresIn;
+            user.LastAuthed = token.LastAuthed;
+            try
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again and see if the problem persists");
+                return StatusCode(StatusCodes.Status500InternalServerError);
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            }
+            token.UserId = user.Id;
+            return CreatedAtAction("GetUser", "Users", new { id = user.Id }, token);
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
         // DELETE: api/Users/5

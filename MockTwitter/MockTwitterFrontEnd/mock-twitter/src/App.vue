@@ -1,20 +1,14 @@
 <template>
     <div id="app">
-        <p>{{counter}}</p>
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
     export default {
         name: 'App',
-        data() {
-            return {
-                counter: 0,
-            }
-        },
-     // i have access to state.
-        mounted() {
-            console.log(this.$store.state.authenticated);
+        created() {
+            this.$store.dispatch('tryAutoLogin')
         }
     }
 </script>

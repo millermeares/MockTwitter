@@ -12,10 +12,13 @@ namespace MockTwitterAPI.Models
         [Key]
         public long Id { get; set; }
         [Required]
-        public string Username { get; set; }
+        public string Username { get; set; } 
         [Required]
-        public string Password_hash {get; set;}
+        public string PasswordHash {get; set;}
         public byte[] Salt { get; set; }
-        public DateTime Created_at { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string IdToken { get; set; }
+        public int TokenExpiresIn { get; set; }
+        public DateTime LastAuthed { get; set; }
     }
 }

@@ -12,6 +12,5 @@ namespace MockTwitterAPI.Models
         }
         public DbSet<Tweet> Tweets { get; set; }
         public DbSet<User> Users { get; set; }
-
     }
 }

@@ -6,8 +6,9 @@
     "\\mock-twitter\\src\\assets",
     "\\mock-twitter\\src\\components",
     "\\mock-twitter\\src\\router",
+    "\\mock-twitter\\src\\store",
     "\\mock-twitter\\src\\views"
   ],
-  "SelectedNode": "\\mock-twitter\\src\\views\\CreateAccount.vue",
+  "SelectedNode": "\\mock-twitter\\src\\store\\store.js",
   "PreviewInSolutionExplorer": false
 }

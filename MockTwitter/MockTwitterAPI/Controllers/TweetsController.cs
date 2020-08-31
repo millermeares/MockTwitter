@@ -79,7 +79,7 @@ namespace MockTwitterAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Tweet>> PostTweet(Tweet tweet)
         {
-            tweet.Created_at = DateTime.Now;
+            tweet.CreatedAt = DateTime.Now;
             _context.Tweets.Add(tweet);
             await _context.SaveChangesAsync();
 

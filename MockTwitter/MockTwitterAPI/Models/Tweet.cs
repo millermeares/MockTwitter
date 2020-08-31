@@ -15,9 +15,9 @@ namespace MockTwitterAPI.Models
         public long Id { get; set; }
         [Required]
         [ForeignKey("User")]
-        public String UserId { get; set; }
+        public long UserId { get; set; }
         [Required]
-        public String Text_content { get; set; }
-        public DateTime Created_at {get; set;}
+        public string TextContent { get; set; }
+        public DateTime CreatedAt {get; set;}
     }
 }
