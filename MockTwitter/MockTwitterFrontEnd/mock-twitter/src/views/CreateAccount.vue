@@ -14,7 +14,9 @@
                     <b-col><b-button variant="outline-primary" to="/login">Back to Login</b-button></b-col>
                 </b-row>
                 <b-row class="mb-2"><b-col align="center"><router-link to="/">Back to welcome page.</router-link></b-col></b-row>
-
+                <b-row v-if="output()">
+                    <b-alert variant="danger" show>{{output()}}</b-alert>
+                </b-row>
             </b-container>
         </div>
         <router-view />
@@ -22,6 +24,7 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex';
     export default {
         name: 'CreateAccount',
         data() {
@@ -44,15 +47,23 @@
                             // verify that the username is not already taken. if it is, say so. 
                             this.$store.dispatch('createaccount', { Username: this.input.username, PasswordHash: this.input.password })
                         } else {
-                            //this.message = "Your password must be 8 or more characters.";
+                            this.$store.commit('setError', "Your password must be 8 or more characters.")
                         }
                     } else {
-                        //this.message = "You must enter the same password into both boxes";
+                        this.$store.commit('setError', "You must enter the same password into both boxes.")
                     }
                 } else {
-                    //this.message = "You must provide a username, and enter the same password in both fields.";
+                    this.$store.commit('setError', "You must provide a username, and enter the same password in both fields.")
                 }
+            },
+            output() {
+                return !this.$store.getters.user.error_message ? false : this.$store.getters.user.error_message
             }
         },
+        computed: mapState(['error_message']),
+        created() {
+            this.$store.commit('resetError')
+        }
+
     }
 </script>

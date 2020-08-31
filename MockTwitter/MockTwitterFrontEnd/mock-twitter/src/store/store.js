@@ -22,9 +22,6 @@ export const store = new Vuex.Store({
             state.username = userSecTokenData.username
             state.error_message = null
         },
-        storeUser(state, userInfo) {
-            state.username = userInfo.username
-        },
         clearAuthData(state) {
             state.idToken = null
             state.userId = null
@@ -33,9 +30,11 @@ export const store = new Vuex.Store({
             state.username = null
         },
         setError(state, error_message) {
+            console.log("Setting error.")
             state.error_message = error_message
         },
-        clearError(state) {
+        resetError(state) {
+            console.log("resetting error message")
             state.error_message = null
         }
     },
@@ -70,7 +69,6 @@ export const store = new Vuex.Store({
                         expirationDate: expirationDate,
                         username: username
                     })
-                    commit('clearError')
                     dispatch('setLogoutTimer', res.data.expiresIn * 60)
                     router.replace('/home')
                 })
@@ -86,7 +84,8 @@ export const store = new Vuex.Store({
                             commit('setError', "Something is wrong with the database or your internet connection. Please try again.")
                         }
                     }
-                    //console.log(error)
+                    console.log("Error in Create account.")
+                    console.log(error)
                 });
         },
         login({ commit, dispatch }, authData) {
@@ -111,9 +110,8 @@ export const store = new Vuex.Store({
                         userId: res.data.userId,
                         expiresIn: res.data.expiresIn,
                         expirationDate: expirationDate,
-                        username: username
+                        username: username,
                     })
-                    commit('clearError')
                     dispatch('setLogoutTimer', res.data.expiresIn * 60)
                     router.replace('/home')
                 })
@@ -132,7 +130,8 @@ export const store = new Vuex.Store({
                             commit('setError', "Something is wrong with the database or your internet connection. Please try again.")
                         }
                     }
-                    //console.log(error)
+                    console.log("Error in login")
+                    console.log(error)
                 });
 
         },
@@ -171,6 +170,9 @@ export const store = new Vuex.Store({
         },
         isAuthenticated(state) {
             return state.idToken !== null
+        },
+        error(state) {
+            return state.error_message
         },
     }
 });

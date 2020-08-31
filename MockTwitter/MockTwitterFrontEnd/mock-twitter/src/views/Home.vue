@@ -18,5 +18,8 @@
         components: {
             NavBar: Nav
         }
+        //created() {
+        //    this.$store.dispatch('fetchUser')
+        //}
     }
 </script>
