@@ -47,7 +47,7 @@
         },
         computed: mapState(['error_message']),
         created() {
-
+            this.$store.commit('resetError')
         }
     }
 </script>
