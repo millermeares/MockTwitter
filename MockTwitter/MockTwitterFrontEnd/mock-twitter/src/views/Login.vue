@@ -4,16 +4,17 @@
         <div class="w-25 mx-auto">
             <b-container>
                 <b-row class="mb-2 text-center"><h2 class="text-primary">Login</h2></b-row>
-                <b-row class="mb-2"><b-form-input type="text" v-model="input.username" placeholder="Enter your username."></b-form-input></b-row>
-                <b-row class="mb-2"><b-form-input type="password" v-model="input.password" placeholder="Enter your password."></b-form-input></b-row>
-                <b-row class="mb-2">
+                <b-row class="mb-3"><b-form-input type="text" v-model="input.username" placeholder="Enter your username."></b-form-input></b-row>
+                <b-row class="mb-3"><b-form-input type="password" v-model="input.password" placeholder="Enter your password."></b-form-input></b-row>
+                <b-row class="mb-3">
                     <b-col><b-button variant="outline-primary" v-on:click="login">Login</b-button></b-col>
                     <b-col><b-button variant="outline-primary" to="/createaccount">New? Create An Account!</b-button></b-col>
                 </b-row>
-                <b-row class="mb-2"><b-col align="center"><router-link to="/">Back to welcome page.</router-link></b-col></b-row>
-                <b-row v-if="output()">
+                <b-row v-if="output()" class="mb-3">
                     <b-alert variant="danger" show>{{output()}}</b-alert>
                 </b-row>
+                <b-row class="mb-3"><b-col align="center"><router-link to="/">Back to welcome page.</router-link></b-col></b-row>
+
             </b-container>
         </div>
         <router-view />
@@ -47,7 +48,10 @@
         },
         computed: mapState(['error_message']),
         created() {
-            this.$store.commit('resetError')
+            console.log(this.$store.getters.user.error_message)
+            if (this.$store.getters.user.error_message != "You have been logged out. Please sign in to access your account.") {
+                this.$store.commit('resetError')
+            }
         }
     }
 </script>

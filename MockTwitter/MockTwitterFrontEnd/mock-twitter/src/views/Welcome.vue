@@ -17,7 +17,7 @@
 </template>
 <style>
     .vertical-center {
-        min-height: 100vh; /* These two lines are counted as one :-)       */
+        min-height: 100vh; 
         display: flex;
         align-items: center;
     }

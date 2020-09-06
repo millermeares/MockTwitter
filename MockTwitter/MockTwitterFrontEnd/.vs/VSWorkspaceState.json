@@ -2,13 +2,13 @@
   "ExpandedNodes": [
     "",
     "\\mock-twitter",
+    "\\mock-twitter\\public",
     "\\mock-twitter\\src",
-    "\\mock-twitter\\src\\assets",
     "\\mock-twitter\\src\\components",
     "\\mock-twitter\\src\\router",
     "\\mock-twitter\\src\\store",
     "\\mock-twitter\\src\\views"
   ],
-  "SelectedNode": "\\mock-twitter\\src\\store\\store.js",
+  "SelectedNode": "\\mock-twitter\\src\\components\\PostTweet.vue",
   "PreviewInSolutionExplorer": false
 }

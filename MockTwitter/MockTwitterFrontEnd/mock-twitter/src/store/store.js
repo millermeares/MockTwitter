@@ -28,6 +28,14 @@ export const store = new Vuex.Store({
             state.expiresIn = null
             state.expirationDate = null
             state.username = null
+            console.log(state)
+            localStorage.removeItem('expirationDate')
+            localStorage.removeItem('idToken')
+            localStorage.removeItem('userId')
+            localStorage.removeItem('username')
+            localStorage.removeItem('expiresIn')
+            state.error_message = ("You have been logged out. Please sign in to access your account.")
+            router.replace("/login")
         },
         setError(state, error_message) {
             console.log("Setting error.")
@@ -40,9 +48,10 @@ export const store = new Vuex.Store({
     },
     actions: {
         setLogoutTimer({ commit }, expirationTime) {
+            console.log("setting logout timer to : " + (expirationTime * 60000))
             setTimeout(() => {
                 commit('clearAuthData')
-            }, expirationTime * 1000)
+            }, expirationTime * 60000)
         },
         createaccount({ commit, dispatch }, authData) {
             // create account request to DB.
@@ -69,8 +78,9 @@ export const store = new Vuex.Store({
                         expirationDate: expirationDate,
                         username: username
                     })
-                    dispatch('setLogoutTimer', res.data.expiresIn * 60)
+                    dispatch('setLogoutTimer', res.data.expiresIn)
                     router.replace('/home')
+                    commit('setError', 'Username or password are incorrect')
                 })
                 .catch(error => {
                     if (error.response != null) {
@@ -112,7 +122,7 @@ export const store = new Vuex.Store({
                         expirationDate: expirationDate,
                         username: username,
                     })
-                    dispatch('setLogoutTimer', res.data.expiresIn * 60)
+                    dispatch('setLogoutTimer', res.data.expiresIn)
                     router.replace('/home')
                 })
                 .catch(error => {

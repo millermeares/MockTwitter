@@ -5,9 +5,13 @@
         <div class="w-25 mx-auto">
             <b-container>
                 <b-row class="mb-2 text-center"><h2 class="text-primary">Create Account</h2></b-row>
-                <b-row class="mb-2"><b-form-input type="text" v-model="input.username" placeholder="Enter your desired username."></b-form-input></b-row>
-                <b-row class="mb-2"><b-form-input type="password" v-model="input.password" placeholder="Enter your password."></b-form-input></b-row>
-                <b-row class="mb-2"><b-form-input type="password" v-model="input.secondpassword" placeholder="Verify your password."></b-form-input></b-row>
+                <b-row class="mb-2"><b-form-input type="text" v-model="input.username" placeholder="Enter your desired username." v-bind:state="usernameValid"></b-form-input></b-row>
+                <b-row class="mb-2">
+                    <b-form-input type="password" v-model="input.password" placeholder="Enter your password." v-bind:state="passwordValid"></b-form-input>
+                </b-row>
+                <b-row class="mb-2">
+                    <b-form-input type="password" v-model="input.secondpassword" placeholder="Verify your password." v-bind:state="passwordValid"></b-form-input>
+                </b-row>
                 <b-row><br /></b-row>
                 <b-row class="text-center mb-2">
                     <b-col><b-button variant="outline-primary" v-on:click="create">Create Account</b-button></b-col>
@@ -33,11 +37,15 @@
                     username: "",
                     password: "",
                     secondpassword: ""
-                }
+                },
+                passwordValid: null,
+                usernameValid: null,
             }
         },
         methods: {
             create() {
+                this.passwordValid = null
+                this.usernameValid = null
                 if (this.input.username != "" && this.input.password != "") {
                     // need to make a request to server to get the userId
                     // if valid, return user id, else return invalid username/pw.
@@ -45,14 +53,24 @@
                         // store this in the database.
                         if (this.input.password.length > 7) {
                             // verify that the username is not already taken. if it is, say so. 
+                            this.passwordValid = true
+                            this.usernameValid = true
                             this.$store.dispatch('createaccount', { Username: this.input.username, PasswordHash: this.input.password })
                         } else {
+                            this.passwordValid = false
                             this.$store.commit('setError', "Your password must be 8 or more characters.")
                         }
                     } else {
+                        this.passwordValid = false
                         this.$store.commit('setError', "You must enter the same password into both boxes.")
                     }
                 } else {
+                    if (this.input.username == "") {
+                        this.usernameValid = false
+                    }
+                    if (this.input.password == "") {
+                        this.passwordValid
+                    }
                     this.$store.commit('setError', "You must provide a username, and enter the same password in both fields.")
                 }
             },
