@@ -18,6 +18,7 @@ namespace MockTwitterAPI.Models
         public long UserId { get; set; }
         [Required]
         public string TextContent { get; set; }
+        [Required]
         public DateTime CreatedAt {get; set;}
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-row align-v="center">
-            <b-col cols="2" align="center"><!--profile image. need to set height and width somehow.--><b-img v-bind="imageProps" rounded="circle" alt="rounded image"></b-img></b-col>
+            <b-col cols="2" align="center"><b-img v-bind="imageProps" rounded="circle" alt="rounded image"></b-img></b-col>
             <b-col cols="10" class="text-break mt-2">
                 <b-form-textarea v-model="text" placeholder="What's Happening?" class="tweetarea" size="lg"></b-form-textarea>
             </b-col>
@@ -30,7 +30,7 @@
         data() {
             return {
                 text: null,
-                imageProps: { blank: true, blankColor: '#777', height: 60, width: 60 }
+                imageProps: { blank: true, blankColor: '#7777', height: 60, width: 60 }
             }
         },
         methods: {
@@ -40,11 +40,22 @@
                     UserId: this.$store.getters.user.userId,
                     TextContent: this.text,
                     // add idToken for validation.
+                }, {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.getters.user.idToken
+                    }
                 }).then(res => {
                     console.log(res)
+                    this.postSuccess()
                 }).catch(error => {
                     console.log(error)
                 })
+            },
+            postSuccess: function () {
+                this.text = null;
+            },
+            postFail: function () {
+
             }
         },
         props: {

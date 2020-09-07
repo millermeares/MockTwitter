@@ -1,7 +1,7 @@
 <template>
     <div id="login">
         <br />
-        <div class="w-25 mx-auto">
+        <div class="w-25 mx-auto" v-on:keydown.enter="login">
             <b-container>
                 <b-row class="mb-2 text-center"><h2 class="text-primary">Login</h2></b-row>
                 <b-row class="mb-3"><b-form-input type="text" v-model="input.username" placeholder="Enter your username."></b-form-input></b-row>

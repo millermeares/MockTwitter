@@ -2,15 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\MockTwitterAPI",
-    "\\MockTwitterAPI\\Controllers",
-    "\\MockTwitterAPI\\Models",
     "\\MockTwitterAPI\\Properties",
     "\\MockTwitterFrontEnd",
     "\\MockTwitterFrontEnd\\mock-twitter",
     "\\MockTwitterFrontEnd\\mock-twitter\\public",
     "\\MockTwitterFrontEnd\\mock-twitter\\src",
+    "\\MockTwitterFrontEnd\\mock-twitter\\src\\components",
+    "\\MockTwitterFrontEnd\\mock-twitter\\src\\store",
     "\\MockTwitterFrontEnd\\mock-twitter\\src\\views"
   ],
-  "SelectedNode": "\\MockTwitterAPI\\Models\\Tweet.cs",
+  "SelectedNode": "\\MockTwitterAPI\\MockTwitterAPI.sln",
   "PreviewInSolutionExplorer": false
 }

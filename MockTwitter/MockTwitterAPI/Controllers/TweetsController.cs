@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MockTwitterAPI.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Org.BouncyCastle.Bcpg;
 
 namespace MockTwitterAPI.Controllers
 {
@@ -14,17 +21,39 @@ namespace MockTwitterAPI.Controllers
     public class TweetsController : ControllerBase
     {
         private readonly TwitterContext _context;
-
-        public TweetsController(TwitterContext context)
+        private readonly ILogger<TweetsController> _logger;
+        public TweetsController(TwitterContext context, ILogger<TweetsController> logger)
         {
+            _logger = logger;
             _context = context;
         }
 
         // GET: api/Tweets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tweet>>> GetTweets()
+        public async Task<ActionResult<IEnumerable<Object>>> GetTweets()
         {
-            return await _context.Tweets.ToListAsync();
+            /*
+            var query = from t in _context.Tweets
+                        join u in _context.Users on t.UserId equals u.Id into grouping
+                        from u in grouping.DefaultIfEmpty()
+                        select new { t, u };
+            
+            List<TweetDisplay> list = new List<TweetDisplay>();
+            foreach(var x in query)
+            {
+                list.Add(new TweetDisplay(x.u.Username, x.t.TextContent, x.t.CreatedAt));
+            }
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.Converters.Add(new JavaScriptDateTimeConverter());
+
+            return JsonConvert.SerializeObject(list, Formatting.Indented, settings);
+            */
+            var query = from t in _context.Tweets
+                        join u in _context.Users on t.UserId equals u.Id into grouping
+                        from u in grouping.DefaultIfEmpty()
+                        orderby t.CreatedAt descending
+                        select new { tweetId=t.Id, username=u.Username, textContent= t.TextContent, createdAt = t.CreatedAt };
+            return await query.ToListAsync();
         }
 
         // GET: api/Tweets/5
@@ -77,11 +106,29 @@ namespace MockTwitterAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Tweet>> PostTweet(Tweet tweet)
+        public async Task<ActionResult<Tweet>> PostTweet([FromBody]Tweet tweet, [FromHeader] string Authorization)
         {
-            tweet.CreatedAt = DateTime.Now;
-            _context.Tweets.Add(tweet);
-            await _context.SaveChangesAsync();
+            string idToken = Authorization.Split(" ")[1];
+            _logger.LogInformation(HttpContext.Request.ToString());
+            _logger.LogInformation(idToken);   
+            // validate authorization headers.
+            var user = await _context.Users.FindAsync(tweet.UserId);
+            var code = AuthModel.validToken(user, idToken);
+            _logger.LogInformation(code.ToString());
+            if(code != 200)
+            {
+                return StatusCode(code);
+            }
+            try
+            {
+                tweet.CreatedAt = DateTime.Now;
+                _context.Tweets.Add(tweet);
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException)
+            {
+                ModelState.AddModelError("", "Could not post tweet. Internal error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return CreatedAtAction("GetTweet", new { id = tweet.Id }, tweet);
         }

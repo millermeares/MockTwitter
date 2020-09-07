@@ -9,6 +9,6 @@
     "\\mock-twitter\\src\\store",
     "\\mock-twitter\\src\\views"
   ],
-  "SelectedNode": "\\mock-twitter\\src\\components\\PostTweet.vue",
+  "SelectedNode": "\\mock-twitter\\src\\views\\Home.vue",
   "PreviewInSolutionExplorer": false
 }

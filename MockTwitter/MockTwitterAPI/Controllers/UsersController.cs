@@ -142,7 +142,7 @@ namespace MockTwitterAPI.Controllers
             }
             TimeSpan exp = new TimeSpan(0, token.TokenExpiresIn, 0);
             // expired.
-            if(token.CreatedAt.Add(exp) < DateTime.Now)
+            if(token.LastAuthed.Add(exp) < DateTime.Now)
             {
                 return BadRequest();
             }

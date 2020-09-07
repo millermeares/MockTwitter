@@ -6,10 +6,10 @@
                 <b-nav-item><h3>Home</h3></b-nav-item>
                 <b-nav-item><h3>About</h3></b-nav-item>
                 <b-nav-item><h3>Settings</h3></b-nav-item>
-                <b-nav-item><b-button pill size="lg" variant="primary">Tweet</b-button></b-nav-item>
                 <b-nav-item><h3>Home</h3></b-nav-item>
                 <b-nav-item><h3>About</h3></b-nav-item>
                 <b-nav-item><h3>Settings</h3></b-nav-item>
+                <b-nav-item><b-button pill size="lg" variant="primary">Tweet</b-button></b-nav-item>
                 <b-nav-item v-on:click="logout()"><h3>Logout</h3></b-nav-item>
                 <b-nav-item>Hello, {{msg}}</b-nav-item>
             </b-nav>
